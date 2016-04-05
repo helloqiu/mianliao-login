@@ -44,13 +44,22 @@ if __name__ == '__main__':
                'Accept-Encoding': 'gzip, deflate',
                'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6'
                }
+    again_data = {'ua': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36',
+                  'sw': 1280,
+                  'sh': 720,
+                  'ww': 1280,
+                  'wh': 720}
     post_mianliao = requests.post(URL, cookies=get_mianliao.cookies, headers=headers,
                                   data='username=%s&password=%s&action=login' % (username, password), verify=False)
+    post_mianliao = requests.post(
+        URL, cookies=get_mianliao.cookies, headers=headers, data=again_data, verify=False)
     if "登陆服务器响应异常" in post_mianliao.text:
-        print("Mianliao's login server is down! :(\nThat's why mianliao sucks :(")
+        print(
+            "Mianliao's login server is down! :(\nThat's why mianliao sucks :(")
         exit()
     if "登陆用户" in post_mianliao.text:
         print("login success! :)")
         exit()
     print("I don't know what's going on! :(")
+    print(post_mianliao.text)
     exit()
