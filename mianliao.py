@@ -47,7 +47,7 @@ if __name__ == '__main__':
     post_mianliao = requests.post(URL, cookies=get_mianliao.cookies, headers=headers,
                                   data='username=%s&password=%s&action=login' % (username, password), verify=False)
     if "登陆服务器响应异常" in post_mianliao.text:
-        print("Mianliao's login server is down! :(")
+        print("Mianliao's login server is down! :(\nThat's why mianliao sucks :(")
         exit()
     if "登陆用户" in post_mianliao.text:
         print("login success! :)")
