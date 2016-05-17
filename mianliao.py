@@ -29,7 +29,8 @@ if __name__ == '__main__':
     fuck_mianliao()
     username = input('username: ')
     password = getpass.getpass('password: ')
-    get_mianliao = requests.get(URL, verify=False)
+    s = requests.Session()
+    s.get(URL, verify=False)
     if get_mianliao.status_code != 200:
         print("Can not connect to the Mianliao Auth Server!")
     headers = {'Connection': 'keep-alive',
@@ -49,10 +50,10 @@ if __name__ == '__main__':
                   'sh': 720,
                   'ww': 1280,
                   'wh': 720}
-    post_mianliao = requests.post(URL, cookies=get_mianliao.cookies, headers=headers,
-                                  data='username=%s&password=%s&action=login' % (username, password), verify=False)
-    post_mianliao = requests.post(
-        URL, cookies=get_mianliao.cookies, headers=headers, data=again_data, verify=False)
+    s.post(URL, headers=headers,
+           data='username=%s&password=%s&action=login' % (username, password),
+           verify=False)
+    post_mianliao = s.post(URL, headers=headers, data=again_data, verify=False)
     if "登陆服务器响应异常" in post_mianliao.text:
         print(
             "Mianliao's login server is down! :(\nThat's why mianliao sucks :(")
