@@ -30,7 +30,7 @@ if __name__ == '__main__':
     username = input('username: ')
     password = getpass.getpass('password: ')
     s = requests.Session()
-    s.get(URL, verify=False)
+    get_mianliao.status_code = s.get(URL, verify=False)
     if get_mianliao.status_code != 200:
         print("Can not connect to the Mianliao Auth Server!")
     headers = {'Connection': 'keep-alive',
