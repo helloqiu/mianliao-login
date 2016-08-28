@@ -1,10 +1,32 @@
 #!/usr/bin/env python3
-# coding=utf-8
+# -*- coding: utf-8 -*-
 
 import requests
 import getpass
+import logging
+
+logging.basicConfig(level=logging.INFO)
 
 URL = "https://wifi.52mianliao.com"
+HEADERS = {'Connection': 'keep-alive',
+           'Content-Length': 53,
+           'Cache-Control': 'max-age=0',
+           'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+           'Origin': 'https://wifi.52mianliao.com',
+           'Upgrade-Insecure-Requests': 1,
+           'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36',
+           'Content-Type': 'application/x-www-form-urlencoded',
+           'Referer': 'https://wifi.52mianliao.com/',
+           'Accept-Encoding': 'gzip, deflate',
+           'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6'
+           }
+
+DATA = {
+    'ua': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36',
+    'sw': 1280,
+    'sh': 720,
+    'ww': 1280,
+    'wh': 720}
 
 
 def fuck_mianliao():
@@ -25,42 +47,28 @@ def fuck_mianliao():
 "
     )
 
+
 if __name__ == '__main__':
     fuck_mianliao()
     username = input('username: ')
     password = getpass.getpass('password: ')
     s = requests.Session()
-    get_mianliao.status_code = s.get(URL, verify=False)
-    if get_mianliao.status_code != 200:
-        print("Can not connect to the Mianliao Auth Server!")
-    headers = {'Connection': 'keep-alive',
-               'Content-Length': 53,
-               'Cache-Control': 'max-age=0',
-               'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-               'Origin': 'https://wifi.52mianliao.com',
-               'Upgrade-Insecure-Requests': 1,
-               'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36',
-               'Content-Type': 'application/x-www-form-urlencoded',
-               'Referer': 'https://wifi.52mianliao.com/',
-               'Accept-Encoding': 'gzip, deflate',
-               'Accept-Language': 'zh-CN,zh;q=0.8,en;q=0.6'
-               }
-    again_data = {'ua': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.110 Safari/537.36',
-                  'sw': 1280,
-                  'sh': 720,
-                  'ww': 1280,
-                  'wh': 720}
-    s.post(URL, headers=headers,
+    status_code = s.get(URL, verify=False).status_code
+    if status_code != 200:
+        logging.info("Can not connect to the Mianliao Auth Server!")
+        logging.info("Status Code: %d" % status_code)
+        exit()
+
+    s.post(URL, headers=HEADERS,
            data='username=%s&password=%s&action=login' % (username, password),
            verify=False)
-    post_mianliao = s.post(URL, headers=headers, data=again_data, verify=False)
+    post_mianliao = s.post(URL, headers=HEADERS, data=DATA, verify=False)
     if "登陆服务器响应异常" in post_mianliao.text:
-        print(
-            "Mianliao's login server is down! :(\nThat's why mianliao sucks :(")
+        logging.info("Mianliao's login server is down! :(\nThat's why mianliao sucks :(")
         exit()
     if "登陆用户" in post_mianliao.text:
-        print("login success! :)")
+        logging.info("login success! :)")
         exit()
-    print("I don't know what's going on! :(")
-    print(post_mianliao.text)
+    logging.info("I don't know what's going on! :(")
+    logging.info(post_mianliao.text)
     exit()
